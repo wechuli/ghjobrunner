@@ -134,3 +134,23 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# vs code file
+
+.vscode
+
+# jetbrains
+.idea
+*.iml
+*.iws       
+
+# env file
+.env
+.env.local
+.env.development
+.env.development.local
+.env.test
+
+# prisma generated
+
+generated/prisma

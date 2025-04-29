@@ -1,0 +1,36 @@
+services:
+  db:
+    image: postgres:17
+    restart: always
+    environment:
+      POSTGRES_USER: actions
+      POSTGRES_PASSWORD: password
+      POSTGRES_DB: ghrunnerdb
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    networks:
+      - ghrunnernet
+
+  rabbit:
+    image: rabbitmq:4-management
+    restart: always
+    environment:
+      RABBITMQ_DEFAULT_USER: actions
+      RABBITMQ_DEFAULT_PASS: password
+    ports:
+      - "5672:5672" # AMQP
+      - "15672:15672" # Web UI
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - ghrunnernet
+
+volumes:
+  postgres_data:
+  rabbitmq_data:
+
+networks:
+  ghrunnernet:
+    name: ghrunnernet

@@ -6,7 +6,7 @@
 
 generator client {
   provider = "prisma-client-js"
-  output = "../node_modules"
+  output   = "../node_modules"
 }
 
 datasource db {
@@ -14,20 +14,76 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+// schema.prisma
 
-// github repository model
+model WorkflowJob {
+  id          Int       @id
+  name        String
+  runId       Int
+  runUrl      String
+  status      String
+  conclusion  String?
+  startedAt   DateTime
+  completedAt DateTime?
+  headBranch  String
+  headSha     String
+
+  repositoryId Int
+  repository   Repository @relation(fields: [repositoryId], references: [id])
+
+  senderId Int
+  sender   Sender @relation(fields: [senderId], references: [id])
+
+  runnerId Int?
+  runner   Runner? @relation(fields: [runnerId], references: [id])
+
+  labels Label[] @relation("JobLabels")
+}
+
+model Sender {
+  id    Int    @id
+  login String
+  type  String
+
+  workflowJobs WorkflowJob[]
+}
 
 model Repository {
-  id            String   @id @default(cuid())
+  id       Int          @id @default(autoincrement())
+  name     String
+  fullName String
+  ownerId  Int
+  owner    Organization @relation(fields: [ownerId], references: [id])
+
+  workflowJobs WorkflowJob[]
+}
+
+model Organization {
+  id   Int    @id
+  name String
+
+  repositories Repository[]
+}
+
+model Runner {
+  id            Int         @id @default(autoincrement())
   name          String
-  owner         String
-  description   String?
-  url           String
-  stars         Int      @default(0)
-  forks         Int      @default(0)
-  language      String?
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
-  issues        Issue[]
-  pullRequests  PullRequest[]
+  runnerGroupId Int
+  runnerGroup   RunnerGroup @relation(fields: [runnerGroupId], references: [id])
+
+  workflowJobs WorkflowJob[]
+}
+
+model RunnerGroup {
+  id   Int    @id @default(autoincrement())
+  name String
+
+  runners Runner[]
+}
+
+model Label {
+  id   Int    @id @default(autoincrement())
+  name String @unique
+
+  jobs WorkflowJob[] @relation("JobLabels")
 }

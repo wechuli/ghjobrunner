@@ -4,7 +4,10 @@
   "description": "Application to manage self-hosted runners and collect statistics on jobs",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "NODE_ENV=development tsx watch src/server.ts",
+    "start": "node dist/src/server.js",
+    "build": "tsc --project tsconfig.json"
   },
   "keywords": [],
   "author": "",
